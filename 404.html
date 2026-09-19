@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Profil bağlantısı</title>
+  <meta name="robots" content="noindex" />
+  <style>
+    :root { --bg:#0e0f14; --card:#181a22; --border:#282c3a; --text:#f2f3f7; --muted:#8e93a5; --button:#d4dcff; --button-text:#14183a; }
+    @media (prefers-color-scheme: light) {
+      :root { --bg:#f5f6fb; --card:#fff; --border:#dfe2ee; --text:#14161f; --muted:#666b7d; }
+    }
+    * { box-sizing: border-box; }
+    body { margin:0; min-height:100vh; display:grid; place-items:center; padding:24px; background:var(--bg); color:var(--text);
+           font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    main { width:100%; max-width:380px; background:var(--card); border:1px solid var(--border); border-radius:20px; padding:28px; text-align:center; }
+    h1 { margin:0 0 6px; font-size:22px; }
+    p  { margin:8px 0 0; color:var(--muted); line-height:1.5; }
+    .user { margin-top:18px; font-size:20px; font-weight:800; word-break:break-all; }
+    a.button { display:block; margin-top:22px; padding:14px; border-radius:14px; background:var(--button); color:var(--button-text);
+               font-weight:700; text-decoration:none; border:1px solid var(--border); }
+    small { display:block; margin-top:18px; color:var(--muted); }
+  </style>
+</head>
+<body>
+  <main>
+    <h1 id="app-name">Bir profil seni bekliyor</h1>
+    <p>Bir arkadaşın seni profiline davet etti.</p>
+    <div class="user" id="user"></div>
+    <a class="button" id="open" href="#">Uygulamada aç</a>
+    <small>Uygulaman yoksa önce yükleyip sonra bu bağlantıya tekrar dokun.</small>
+  </main>
+  <script>
+    // Yol: /u/<kullanici_adi>. Yalnızca kullanıcı adı gösterilir; profil verisi herkese açık sunulmaz.
+    const m = location.pathname.match(/^\/u\/([a-z0-9_]{3,20})\/?$/i);
+    const name = m ? m[1].toLowerCase() : '';
+    document.getElementById('user').textContent = name ? '@' + name : '';
+    // Uygulama yüklüyse evrensel bağlantı zaten doğrudan açar; bu düğme yedek (özel şema).
+    document.getElementById('open').href = name ? 'kayitapp://u/' + name : '#';
+    if (!name) document.getElementById('open').style.display = 'none';
+  </script>
+</body>
+</html>

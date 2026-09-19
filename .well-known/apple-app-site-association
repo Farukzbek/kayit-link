@@ -1,0 +1,10 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["TAKIM_KIMLIGI.paket.kimligi"],
+        "components": [{ "/": "/u/*", "comment": "Profil bağlantıları" }]
+      }
+    ]
+  }
+}
