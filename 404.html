@@ -6,9 +6,9 @@
   <title>Profil bağlantısı</title>
   <meta name="robots" content="noindex" />
   <style>
-    :root { --bg:#0e0f14; --card:#181a22; --border:#282c3a; --text:#f2f3f7; --muted:#8e93a5; --button:#d4dcff; --button-text:#14183a; }
+    :root { --bg:#0e0f14; --card:#181a22; --border:#282c3a; --text:#f2f3f7; --muted:#8e93a5; --button:#d4dcff; --button-text:#14183a; --warn:#f6c945; }
     @media (prefers-color-scheme: light) {
-      :root { --bg:#f5f6fb; --card:#fff; --border:#dfe2ee; --text:#14161f; --muted:#666b7d; }
+      :root { --bg:#f5f6fb; --card:#fff; --border:#dfe2ee; --text:#14161f; --muted:#666b7d; --warn:#b7791f; }
     }
     * { box-sizing: border-box; }
     body { margin:0; min-height:100vh; display:grid; place-items:center; padding:24px; background:var(--bg); color:var(--text);
@@ -17,27 +17,59 @@
     h1 { margin:0 0 6px; font-size:22px; }
     p  { margin:8px 0 0; color:var(--muted); line-height:1.5; }
     .user { margin-top:18px; font-size:20px; font-weight:800; word-break:break-all; }
-    a.button { display:block; margin-top:22px; padding:14px; border-radius:14px; background:var(--button); color:var(--button-text);
+    .warn { margin-top:20px; padding:12px 14px; border-radius:12px; border:1px solid var(--warn); color:var(--warn); font-size:14px; line-height:1.45; }
+    a.button { display:block; margin-top:14px; padding:14px; border-radius:14px; background:var(--button); color:var(--button-text);
                font-weight:700; text-decoration:none; border:1px solid var(--border); }
-    small { display:block; margin-top:18px; color:var(--muted); }
+    a.link { display:inline-block; margin-top:18px; color:var(--muted); font-size:14px; }
+    [hidden] { display:none !important; }
   </style>
 </head>
 <body>
   <main>
-    <h1 id="app-name">Bir profil seni bekliyor</h1>
+    <h1>Bir profil seni bekliyor</h1>
     <p>Bir arkadaşın seni profiline davet etti.</p>
     <div class="user" id="user"></div>
-    <a class="button" id="open" href="#">Uygulamada aç</a>
-    <small>Uygulaman yoksa önce yükleyip sonra bu bağlantıya tekrar dokun.</small>
+
+    <!-- Bu sayfa yalnızca uygulaması yüklü olmayanlara görünür: uygulama yüklüyken evrensel bağlantı
+         doğrudan uygulamayı açar. Bu yüzden burada uyarı verip indirmeye yönlendiriyoruz. -->
+    <div class="warn" id="warn">Bu profili görmek için uygulamayı yüklemen gerekiyor.</div>
+    <a class="button" id="download" href="#">Uygulamayı indir</a>
+    <p id="countdown" hidden></p>
+    <a class="link" id="open" href="#">Uygulamam zaten yüklü, uygulamada aç</a>
   </main>
   <script>
+    // Uygulama mağazada (ya da herkese açık TestFlight'ta) yayınlanınca buraya indirme adresini yaz.
+    // Boşsa "yakında" mesajı gösterilir ve yönlendirme yapılmaz.
+    const DOWNLOAD_URL = '';
+    const REDIRECT_AFTER_SECONDS = 4;
+
     // Yol: /u/<kullanici_adi>. Yalnızca kullanıcı adı gösterilir; profil verisi herkese açık sunulmaz.
     const m = location.pathname.match(/^\/u\/([a-z0-9_]{3,20})\/?$/i);
     const name = m ? m[1].toLowerCase() : '';
     document.getElementById('user').textContent = name ? '@' + name : '';
-    // Uygulama yüklüyse evrensel bağlantı zaten doğrudan açar; bu düğme yedek (özel şema).
-    document.getElementById('open').href = name ? 'kayitapp://u/' + name : '#';
-    if (!name) document.getElementById('open').style.display = 'none';
+
+    const open = document.getElementById('open');
+    if (name) open.href = 'kayitapp://u/' + name; else open.hidden = true;
+
+    const download = document.getElementById('download');
+    const countdown = document.getElementById('countdown');
+    if (DOWNLOAD_URL) {
+      download.href = DOWNLOAD_URL;
+      // Kullanıcı vazgeçebilsin diye gerisayımlı yönlendirme (?noredirect ile kapatılabilir).
+      if (!location.search.includes('noredirect')) {
+        let left = REDIRECT_AFTER_SECONDS;
+        countdown.hidden = false;
+        const tick = () => {
+          countdown.textContent = left + ' saniye içinde indirme sayfasına yönlendiriliyorsun…';
+          if (left-- <= 0) location.href = DOWNLOAD_URL;
+          else setTimeout(tick, 1000);
+        };
+        tick();
+      }
+    } else {
+      download.hidden = true;
+      document.getElementById('warn').textContent = 'Uygulama henüz yayında değil. Yayınlanınca bu bağlantı seni indirme sayfasına götürecek.';
+    }
   </script>
 </body>
 </html>
