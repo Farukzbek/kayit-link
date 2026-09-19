@@ -32,7 +32,7 @@
 
     <!-- Bu sayfa yalnızca uygulaması yüklü olmayanlara görünür: uygulama yüklüyken evrensel bağlantı
          doğrudan uygulamayı açar. Bu yüzden burada uyarı verip indirmeye yönlendiriyoruz. -->
-    <div class="warn" id="warn">Bu profili görmek için uygulamayı yüklemen gerekiyor.</div>
+    <div class="warn" id="warn">Bu profili görmek için HobbyShelf uygulamasını yüklemen gerekiyor.</div>
     <a class="button" id="download" href="#">Uygulamayı indir</a>
     <p id="countdown" hidden></p>
     <a class="link" id="open" href="#">Uygulamam zaten yüklü, uygulamada aç</a>
@@ -49,7 +49,7 @@
     document.getElementById('user').textContent = name ? '@' + name : '';
 
     const open = document.getElementById('open');
-    if (name) open.href = 'kayitapp://u/' + name; else open.hidden = true;
+    if (name) open.href = 'hobbyshelf://u/' + name; else open.hidden = true;
 
     const download = document.getElementById('download');
     const countdown = document.getElementById('countdown');
