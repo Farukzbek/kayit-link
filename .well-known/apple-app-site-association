@@ -2,8 +2,15 @@
   "applinks": {
     "details": [
       {
-        "appIDs": ["TAKIM_KIMLIGI.paket.kimligi"],
-        "components": [{ "/": "/u/*", "comment": "Profil bağlantıları" }]
+        "appIDs": [
+          "U4K5JMCCXV.online.matestudios.hobbyshelf"
+        ],
+        "components": [
+          {
+            "/": "/u/*",
+            "comment": "Profil bağlantıları"
+          }
+        ]
       }
     ]
   }
